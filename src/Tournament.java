@@ -16,11 +16,28 @@ public class Tournament {
 				System.out.println("You cannot create a tournament with just yourself! That is not a tournament!");
 				System.exit(0);
 			}
+
 			players = Collections.unmodifiableList(Players.createPlayers(s, noOfPlayers));
+
 			System.out.println("Before we continue...");
 			System.out.println("Do you want to see a list of the players? Y or N");
-			// WIP - Show players on-demand
-			Players.showPlayers(players);
+			String showPlayerAnswer = s.next().toLowerCase();
+			boolean validAnswer = false;
+			while(!validAnswer) {
+				switch (showPlayerAnswer) {
+					case "y":
+						Players.showPlayers(players);
+						validAnswer = true;
+						break;
+					case "n":
+						validAnswer = true;
+						break;
+					default:
+						System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
+						showPlayerAnswer = s.next().toLowerCase();
+						break;
+				}
+			}
 
 			// Creating a copy of the list - will be used to avoid duplicates
 			remainingPlayers = new ArrayList<>(players);
