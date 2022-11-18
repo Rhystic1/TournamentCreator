@@ -24,10 +24,16 @@ public class Groups {
         Random rand = new Random();
         ArrayList<String> group = new ArrayList<>();
         for (int i = 0; i < playersPerGroup; i++) {
-            if ((group.size() != playersPerGroup) && (remainingPlayers.size() != 0)) {
+            if ((group.size() != playersPerGroup) && (!remainingPlayers.isEmpty())) {
                 int randomIndex = rand.nextInt(remainingPlayers.size());
                 group.add(remainingPlayers.get(randomIndex));
                 remainingPlayers.remove(randomIndex);
+            }
+            // Handle remaining players for odd numbers
+            if (((group.size() == playersPerGroup) &&
+                    (remainingPlayers.size() < playersPerGroup) && remainingPlayers.size() != 0)) {
+                group.add(remainingPlayers.get(0));
+                remainingPlayers.remove(0);
             }
         }
         return group;
