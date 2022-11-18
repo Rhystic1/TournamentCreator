@@ -15,17 +15,16 @@ public class Groups {
         }
         groups = new HashMap<>(noOfGroups);
         for (int i = 0; i < noOfGroups; i++) {
-            groups.put(i, createGroup(remainingPlayers));
+            groups.put(i, createGroup(remainingPlayers, playersPerGroup));
         }
         return groups;
     }
 
-    private static ArrayList<String> createGroup(ArrayList<String> remainingPlayers) {
+    private static ArrayList<String> createGroup(ArrayList<String> remainingPlayers, int playersPerGroup) {
         Random rand = new Random();
-        int noOfPlayers = 4;
         ArrayList<String> group = new ArrayList<>();
-        for (int i = 0; i < noOfPlayers; i++) {
-            if ((group.size() != noOfPlayers) && (remainingPlayers.size() != 0)) {
+        for (int i = 0; i < playersPerGroup; i++) {
+            if ((group.size() != playersPerGroup) && (remainingPlayers.size() != 0)) {
                 int randomIndex = rand.nextInt(remainingPlayers.size());
                 group.add(remainingPlayers.get(randomIndex));
                 remainingPlayers.remove(randomIndex);

@@ -45,11 +45,13 @@ public class Tournament {
 			// Creating a copy of the list - will be used to avoid duplicates
 			remainingPlayers = new ArrayList<>(players);
 
-			// Creating the group stage - for now the default (and only) settings are groups
-			// of 4 players
-			int playersPerGroup = 4;
+			// Creating the group stage
+			System.out.println("How many players would you like per group?");
+			System.out.println("Note that if you have an odd number of players, some groups may not respect this setting.");
+			int playersPerGroup = s.nextInt();
 			groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
 
+			// Printing the groups
 			System.out.println("Here are the groups:");
 			System.out.println("");
 
