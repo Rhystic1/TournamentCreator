@@ -33,8 +33,6 @@ public class FrontEnd extends JFrame {
 	}
 	
 	public void addTournament(Tournament tournament) {
-		
 		tournamentPanel.addTournament(tournament);
-			
 	}
 }
