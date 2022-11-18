@@ -8,12 +8,16 @@ public class Tournament {
 
 	private HashMap<Integer, ArrayList<String>> groups;
 	
+	private Audit auditHistory = new Audit();
+	
 	public Tournament generateTournament() {
+		auditHistory.append("Started at " + new Date().toString());
 		try (Scanner s = new Scanner(System.in)) {
 
 			// Initializing the tournament size
 			System.out.println("How many players?");
 			int noOfPlayers = s.nextInt();
+			auditHistory.append("Created tournament of "+noOfPlayers+" players.");
 			if (noOfPlayers <= 1) {
 				// WIP - Proper error handling
 				System.out.println("You cannot create a tournament with just yourself! That is not a tournament!");
@@ -63,7 +67,19 @@ public class Tournament {
 		return this;
 	}
 	
+	public void createNewGroup(ArrayList<String> players) {
+		
+	}
+	
+	public void addAudit(String text) {
+		auditHistory.append(text);
+	}
+	
 	public ArrayList<String> getGroup(int index) {
 		return groups.get(index);
+	}
+	
+	public int getGroupSize(){
+		return groups.get(0).size();
 	}
 }
