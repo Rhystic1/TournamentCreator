@@ -1,3 +1,4 @@
+package logic;
 import java.util.*;
 
 public class Tournament {
@@ -5,6 +6,8 @@ public class Tournament {
 	private List<String> players;
 	private ArrayList<String> remainingPlayers;
 
+	private HashMap<Integer, ArrayList<String>> groups;
+	
 	public Tournament generateTournament() {
 		try (Scanner s = new Scanner(System.in)) {
 
@@ -45,7 +48,7 @@ public class Tournament {
 			// Creating the group stage - for now the default (and only) settings are groups
 			// of 4 players
 			int playersPerGroup = 4;
-			Map<Integer, ArrayList<String>> groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
+			groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
 
 			System.out.println("Here are the groups:");
 			System.out.println("");
@@ -56,5 +59,9 @@ public class Tournament {
 			}
 		}
 		return this;
+	}
+	
+	public ArrayList<String> getGroup(int index) {
+		return groups.get(index);
 	}
 }
