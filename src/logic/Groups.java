@@ -1,16 +1,17 @@
 package logic;
+
 import java.util.*;
 
 public class Groups {
-	
+
     public static HashMap<Integer, ArrayList<String>> createGroups(int noOfPlayers, ArrayList<String> remainingPlayers, int playersPerGroup) {
-    	HashMap<Integer, ArrayList<String>> groups = null;
+        HashMap<Integer, ArrayList<String>> groups = null;
         int noOfGroups;
         double noOfGroupsOdd;
         if (noOfPlayers % playersPerGroup == 0) {
             noOfGroups = noOfPlayers / playersPerGroup;
         } else {
-            noOfGroupsOdd = Math.ceil((double)noOfPlayers / ((double)playersPerGroup + 1));
+            noOfGroupsOdd = Math.ceil((double) noOfPlayers / ((double) playersPerGroup + 1));
             noOfGroups = (int) noOfGroupsOdd;
         }
         groups = new HashMap<>(noOfGroups);
