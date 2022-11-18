@@ -67,7 +67,7 @@ public class TournamentPanel extends JPanel {
 
 	private void renderTournament(Graphics g) {
 		ArrayList<String> names = tournament.getGroup(currentGroup);
-		g.drawString("Group "+currentGroup, 100, 100);
+		g.drawString("Group "+ (currentGroup + 1), 100, 100);
 		for(int i = 0; i < names.size(); i++) {
 			g.drawString(names.get(i), (i*100) + 200, 200);
 		}
