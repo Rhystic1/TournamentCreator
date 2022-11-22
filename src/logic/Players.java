@@ -11,6 +11,12 @@ public class Players {
         for (int i = 0; i < noOfPlayers; i++) {
             System.out.println("Insert the name of Player " + (i + 1));
             String playerName = s.nextLine();
+            if (players.contains(playerName))
+            {
+                System.out.println("Player " + "\"" + playerName + "\"" + " already exists. You must assign a unique name for each player.");
+                i--;
+                continue;
+            }
             players.add(playerName);
         }
         return players;
