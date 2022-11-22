@@ -4,7 +4,6 @@ import java.util.*;
 public class Tournament {
 
 	private List<String> players;
-	private ArrayList<String> remainingPlayers;
 
 	private HashMap<Integer, ArrayList<String>> groups;
 	
@@ -47,7 +46,7 @@ public class Tournament {
 			}
 
 			// Creating a copy of the list - will be used to avoid duplicates
-			remainingPlayers = new ArrayList<>(players);
+			ArrayList<String> remainingPlayers = new ArrayList<>(players);
 
 			// Creating the group stage
 			System.out.println("How many players would you like per group?");
@@ -67,9 +66,9 @@ public class Tournament {
 		return this;
 	}
 	
-	public void createNewGroup(ArrayList<String> players) {
-		
-	}
+//	public void createNewGroup(ArrayList<String> players) {
+//
+//	}
 	
 	public void addAudit(String text) {
 		auditHistory.append(text);
@@ -78,8 +77,20 @@ public class Tournament {
 	public ArrayList<String> getGroup(int index) {
 		return groups.get(index);
 	}
+
+	public int getNoOfGroups(){
+		return groups.size();
+	}
 	
 	public int getGroupSize(){
 		return groups.get(0).size();
 	}
+
+	public int noOfPlayers(){
+		return players.size();
+	}
+
+//	public int getOddGroupSize(int noOfGroups){
+//		return groups.get(noOfGroups - 1).size();
+//	}
 }

@@ -84,6 +84,7 @@ public class TournamentPanel extends JPanel {
 
 	public void addTournament(Tournament tournament) {
 		this.tournament = tournament;
+		int noOfPlayers = tournament.noOfPlayers();
 		this.groupSize = tournament.getGroupSize();
 		generateMarkers();
 	}
@@ -106,11 +107,22 @@ public class TournamentPanel extends JPanel {
 	}
 
 	private void renderTournament(Graphics g) {
+		boolean isOdd = tournament.noOfPlayers() % 2 != 0;
 		ArrayList<String> names = tournament.getGroup(currentGroup);
+		int lastGroup = tournament.getNoOfGroups();
 		g.drawString("Group " + (currentGroup + 1), 100, 100);
-		for (int i = 0; i < names.size(); i++) {
-			g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
-			drawBoxes(g, i);
+		if ((currentGroup == (lastGroup + 1)) && (isOdd))
+		{
+			for (int i = 0; i < (names.size() - 1); i++) {
+				g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
+				drawBoxes(g, (i-1));
+			}
+		}
+		else {
+			for (int i = 0; i < names.size(); i++) {
+				g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
+				drawBoxes(g, i);
+			}
 		}
 		g.drawString(debugStr, 0, 20);
 	}
@@ -118,7 +130,13 @@ public class TournamentPanel extends JPanel {
 	private void drawBoxes(Graphics g, int index) {
 		if(playerMarkers.isEmpty())
 			return;
-		Marker marker = playerMarkers.get(index);
+		Marker marker;
+		try {
+			marker = playerMarkers.get(index);
+		}
+		catch (IndexOutOfBoundsException ex) {
+			marker = playerMarkers.get(index-1);
+		}
 		Rectangle bounds = marker.getBounds();
 		if (marker.marked()) {
 			g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
