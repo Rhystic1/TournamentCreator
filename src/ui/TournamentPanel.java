@@ -22,7 +22,7 @@ public class TournamentPanel extends JPanel {
 	private int currentGroup = 0;
 
 	private int groupSize;
-	
+
 	private final int X_MARGIN = 200;
 	private String debugStr;
 
@@ -73,7 +73,7 @@ public class TournamentPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				debugStr = "Clicked at "+e.getX()+","+e.getY();
-				for(Marker m : playerMarkers) {				
+				for(Marker m : playerMarkers) {
 					if(m.getBounds().contains(e.getX(), e.getY()))
 						m.mark();
 				}
@@ -91,7 +91,7 @@ public class TournamentPanel extends JPanel {
 
 	public void generateMarkers() {
 		playerMarkers.clear();
-		for (int i = 0; i < groupSize; i++) {
+		for (int i = 0; i <= tournament.getGroupSize(); i++) {
 			int startX = X_MARGIN + (i * 100) - 10;
 			int startY = 190;
 			playerMarkers.add(new Marker(startX, startY, 50, 50));
@@ -111,19 +111,10 @@ public class TournamentPanel extends JPanel {
 		ArrayList<String> names = tournament.getGroup(currentGroup);
 		int lastGroup = tournament.getNoOfGroups();
 		g.drawString("Group " + (currentGroup + 1), 100, 100);
-		if ((currentGroup == (lastGroup + 1)) && (isOdd))
-		{
-			for (int i = 0; i < (names.size() - 1); i++) {
-				g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
-				drawBoxes(g, (i-1));
-			}
-		}
-		else {
 			for (int i = 0; i < names.size(); i++) {
 				g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
 				drawBoxes(g, i);
 			}
-		}
 		g.drawString(debugStr, 0, 20);
 	}
 	
@@ -144,5 +135,4 @@ public class TournamentPanel extends JPanel {
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		}
 	}
-
 }
