@@ -66,10 +66,6 @@ public class Tournament {
 		return this;
 	}
 	
-//	public void createNewGroup(ArrayList<String> players) {
-//
-//	}
-	
 	public void addAudit(String text) {
 		auditHistory.append(text);
 	}
@@ -89,8 +85,4 @@ public class Tournament {
 	public int noOfPlayers(){
 		return players.size();
 	}
-
-//	public int getOddGroupSize(int noOfGroups){
-//		return groups.get(noOfGroups - 1).size();
-//	}
 }

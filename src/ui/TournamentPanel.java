@@ -21,8 +21,6 @@ public class TournamentPanel extends JPanel {
 	private Tournament tournament;
 	private int currentGroup = 0;
 
-	private int groupSize;
-
 	private final int X_MARGIN = 200;
 	private String debugStr;
 
@@ -85,7 +83,7 @@ public class TournamentPanel extends JPanel {
 	public void addTournament(Tournament tournament) {
 		this.tournament = tournament;
 		int noOfPlayers = tournament.noOfPlayers();
-		this.groupSize = tournament.getGroupSize();
+		int groupSize = tournament.getGroupSize();
 		generateMarkers();
 	}
 
@@ -111,10 +109,10 @@ public class TournamentPanel extends JPanel {
 		ArrayList<String> names = tournament.getGroup(currentGroup);
 		int lastGroup = tournament.getNoOfGroups();
 		g.drawString("Group " + (currentGroup + 1), 100, 100);
-			for (int i = 0; i < names.size(); i++) {
-				g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
-				drawBoxes(g, i);
-			}
+		for (int i = 0; i < names.size(); i++) {
+			g.drawString(names.get(i), X_MARGIN + (i * 100), 200);
+			drawBoxes(g, i);
+		}
 		g.drawString(debugStr, 0, 20);
 	}
 	
