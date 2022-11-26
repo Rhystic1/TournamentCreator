@@ -1,6 +1,9 @@
 package logic;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Groups {
 
@@ -38,5 +41,39 @@ public class Groups {
             }
         }
         return group;
+    }
+
+    public static ArrayList<String> unpackGroup(Integer groupNumber, HashMap<Integer, ArrayList<String>> groups, List<String> players) {
+        ArrayList<String> originalGroup = new ArrayList<>();
+        ArrayList<String> unpackedGroup = new ArrayList<>();
+        Pattern pattern;
+        Matcher matcher;
+        originalGroup.add(groups.get(groupNumber).toString());
+        for (String player :
+                players) {
+            pattern = Pattern.compile(player);
+            matcher = pattern.matcher(originalGroup.get(0));
+            if (matcher.find()) {
+                unpackedGroup.add(player);
+            }
+        }
+        return unpackedGroup;
+    }
+
+    public static HashMap<String, Integer> setGroupScores(ArrayList<String> unpackedGroup, Scanner sc) {
+        HashMap<String, Integer> groupWithScores = new HashMap<>();
+        for (String player :
+                unpackedGroup) {
+            System.out.println("Set a score for " + player + ":");
+            Integer score = sc.nextInt();
+            groupWithScores.put(player, score);
+        }
+
+        System.out.println("Here are the standings for this group: ");
+        for (int i = 0; i < groupWithScores.size(); i++)
+        {
+            System.out.println(i);
+        }
+        return groupWithScores;
     }
 }
