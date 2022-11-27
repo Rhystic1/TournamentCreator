@@ -68,12 +68,10 @@ public class Groups {
             Integer score = sc.nextInt();
             groupWithScores.put(player, score);
         }
-
         System.out.println("Here are the standings for this group: ");
-        for (int i = 0; i < groupWithScores.size(); i++)
-        {
-            System.out.println(i);
-        }
+        groupWithScores.entrySet().stream()
+                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
+                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
         return groupWithScores;
     }
 }
