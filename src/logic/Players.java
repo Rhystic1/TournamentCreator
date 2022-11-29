@@ -24,6 +24,9 @@ public class Players {
 
     static void showPlayers(List<String> players) {
         System.out.println("Here are the players:");
-        System.out.println(players);
+        for (String player :
+                players) {
+            System.out.println(player);
+        }
     }
 }
