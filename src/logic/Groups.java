@@ -1,6 +1,5 @@
 package logic;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,7 +59,7 @@ public class Groups {
         return unpackedGroup;
     }
 
-    public static HashMap<String, Integer> setGroupScores(ArrayList<String> unpackedGroup, Scanner sc) {
+    public static HashMap<String, Integer> setGroupScores(ArrayList<String> unpackedGroup, Scanner sc, int noOfPlayersProgressing) {
         HashMap<String, Integer> groupWithScores = new HashMap<>();
         for (String player :
                 unpackedGroup) {
@@ -72,6 +71,29 @@ public class Groups {
         groupWithScores.entrySet().stream()
                 .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
                 .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
+
+        System.out.println("This means that the following players will proceed to the next round: ");
+        for (int i = 0; i < noOfPlayersProgressing; i++) {
+        //TODO Implement this
+        }
+        System.out.println("Does this look right to you? (Y or N)");
+        String showPlayerAnswer = sc.next().toLowerCase();
+        boolean isValidAnswer = false;
+        while(!isValidAnswer) {
+            switch (showPlayerAnswer) {
+                case "y":
+                    isValidAnswer = true;
+                    break;
+                case "n":
+                    isValidAnswer = true;
+                    setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
+                    break;
+                default:
+                    System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
+                    showPlayerAnswer = sc.next().toLowerCase();
+                    break;
+            }
+        }
         return groupWithScores;
     }
 }
