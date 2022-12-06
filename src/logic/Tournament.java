@@ -14,25 +14,23 @@ public class Tournament {
         auditHistory.append("Started at " + new Date().toString());
         int noOfPlayers = 0;
         int playersPerGroup;
-        int noOfPlayersProgressing;
-        try (Scanner s = new Scanner(System.in)) {
+        Scanner s = new Scanner(System.in);
 
-            // Initializing the tournament size
-            while (noOfPlayers < 2) {
-                noOfPlayers = setPlayerCount(s);
-            }
-            askForPlayerList(s);
-
-            // Creating a copy of the list - will be used to avoid duplicates
-            ArrayList<String> remainingPlayers = new ArrayList<>(players);
-
-            playersPerGroup = groupStageSetup(noOfPlayers, s, remainingPlayers);
-            noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
-            printGroups();
-
-            System.out.println("After your first group has played a match, press any key to continue and set the scores...");
-            setScores(noOfPlayersProgressing);
+        // Initializing the tournament size
+        while (noOfPlayers < 2) {
+            noOfPlayers = setPlayerCount(s);
         }
+        askForPlayerList(s);
+
+        // Creating a copy of the list - will be used to avoid duplicates
+        ArrayList<String> remainingPlayers = new ArrayList<>(players);
+
+        playersPerGroup = groupStageSetup(noOfPlayers, s, remainingPlayers);
+        int noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
+        printGroups();
+
+        System.out.println("After your first group has played a match, press any key to continue and set the scores...");
+        setScores(noOfPlayersProgressing);
         return this;
     }
 
@@ -51,10 +49,9 @@ public class Tournament {
             }
         }
         auditHistory.append("Created tournament of " + noOfPlayers + " players.");
-        players = Collections.unmodifiableList(Players.createPlayers(s, noOfPlayers));
+        players = Collections.unmodifiableList(PlayerSetup.createPlayers(s, noOfPlayers));
         return noOfPlayers;
     }
-
 
     private void printGroups() {
         System.out.println("Here are the groups:");
@@ -122,22 +119,15 @@ public class Tournament {
     private void askForPlayerList(Scanner s) {
         System.out.println("Before we continue...");
         System.out.println("Do you want to see a list of the players? Y or N");
-        String showPlayerAnswer = s.next().toLowerCase();
-        boolean isValidAnswer = false;
-        while (!isValidAnswer) {
-            switch (showPlayerAnswer) {
-                case "y":
-                    Players.showPlayers(players);
-                    isValidAnswer = true;
-                    break;
-                case "n":
-                    isValidAnswer = true;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
-                    showPlayerAnswer = s.next().toLowerCase();
-                    break;
+        String showPlayerAnswer;
+        do {
+            showPlayerAnswer = s.next();
+            if (!showPlayerAnswer.equalsIgnoreCase("y") && !showPlayerAnswer.equalsIgnoreCase("n")) {
+                System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
             }
+        } while (!showPlayerAnswer.equalsIgnoreCase("y") && !showPlayerAnswer.equalsIgnoreCase("n"));
+        if (showPlayerAnswer.equalsIgnoreCase("y")) {
+            PlayerSetup.showPlayers(players);
         }
     }
 

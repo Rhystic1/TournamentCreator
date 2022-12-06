@@ -7,22 +7,22 @@ import java.util.Date;
 
 public class Audit {
 
-	public ArrayList<String> history;
+    public ArrayList<String> history;
 
-	public Audit() {
-		history = new ArrayList<>();
-	}
+    public Audit() {
+        history = new ArrayList<>();
+    }
 
-	public void append(String text) {
-		history.add(text);
-	}
+    public void append(String text) {
+        history.add(text);
+    }
 
-	public void writeToFile() {
-		try {
-			Files.write(Paths.get("./history" + new Date().toString()), history.toString().getBytes());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public void writeToFile() {
+        try {
+            Files.write(Paths.get("./history" + new Date().toString()), history.toString().getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

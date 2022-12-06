@@ -1,19 +1,17 @@
 package logic;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-public class Players {
+public class PlayerSetup {
     static List<String> createPlayers(Scanner s, int noOfPlayers) {
-        List<String> players = new ArrayList<>();
+        Set<String> players = new HashSet<>();
         s.nextLine();
 
         for (int i = 0; i < noOfPlayers; i++) {
-            System.out.println("Insert the name of Player " + (i + 1));
+            System.out.println(String.format("Insert the name of Player %d", i + 1));
             String playerName = s.nextLine();
             if (players.contains(playerName)) {
-                System.out.println("Player " + "\"" + playerName + "\"" + " already exists. You must assign a unique name for each player.");
+                System.out.println(String.format("Player %s already exists. You must assign a unique name for each player.", playerName));
                 i--;
                 continue;
             }
@@ -24,14 +22,14 @@ public class Players {
             }
             players.add(playerName);
         }
-        return players;
+        return new ArrayList<>(players);
     }
 
     static void showPlayers(List<String> players) {
         System.out.println("Here are the players:");
-        for (String player :
-                players) {
+        for (String player : players) {
             System.out.println(player);
         }
     }
 }
+
