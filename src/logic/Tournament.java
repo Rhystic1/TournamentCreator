@@ -4,35 +4,35 @@ import java.util.*;
 
 public class Tournament {
 
-	private List<String> players;
+    private List<String> players;
 
     private HashMap<Integer, ArrayList<String>> groups;
 
     private Audit auditHistory = new Audit();
 
     public Tournament generateTournament() {
-		auditHistory.append("Started at " + new Date().toString());
-		int noOfPlayers = 0;
-		int playersPerGroup;
-		Scanner s = new Scanner(System.in);
+        auditHistory.append("Started at " + new Date().toString());
+        int noOfPlayers = 0;
+        int playersPerGroup;
+        Scanner s = new Scanner(System.in);
 
-		// Initializing the tournament size
-		while (noOfPlayers < 2) {
-			noOfPlayers = setPlayerCount(s);
-		}
-		askForPlayerList(s);
+        // Initializing the tournament size
+        while (noOfPlayers < 2) {
+            noOfPlayers = setPlayerCount(s);
+        }
+        askForPlayerList(s);
 
-		// Creating a copy of the list - will be used to avoid duplicates
-		ArrayList<String> remainingPlayers = new ArrayList<>(players);
+        // Creating a copy of the list - will be used to avoid duplicates
+        ArrayList<String> remainingPlayers = new ArrayList<>(players);
 
-		playersPerGroup = groupStageSetup(noOfPlayers, s, remainingPlayers);
-		int noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
-		printGroups();
+        playersPerGroup = groupStageSetup(noOfPlayers, s, remainingPlayers);
+        int noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
+        printGroups();
 
-		System.out.println("After your first group has played a match, press any key to continue and set the scores...");
-		setScores(noOfPlayersProgressing);
-		return this;
-	}
+        System.out.println("After your first group has played a match, press any key to continue and set the scores...");
+        setScores(noOfPlayersProgressing);
+        return this;
+    }
 
     private int setPlayerCount(Scanner s) {
         int noOfPlayers = 0;
@@ -57,11 +57,11 @@ public class Tournament {
         System.out.println("Here are the groups:");
         System.out.println("");
 
-		for (int i = 0; i < groups.size(); i++) {
-			System.out.println("Group " + (i + 1) + ":");
-			System.out.println(groups.get(i));
-		}
-	}
+        for (int i = 0; i < groups.size(); i++) {
+            System.out.println("Group " + (i + 1) + ":");
+            System.out.println(groups.get(i));
+        }
+    }
 
     private int groupStageSetup(int noOfPlayers, Scanner s, ArrayList<String> remainingPlayers) {
         int playersPerGroup = 0;
@@ -107,7 +107,7 @@ public class Tournament {
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
 
-		HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
+        HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
             ArrayList<String> unpackedGroup = Groups.unpackGroup(i, groups, players);
@@ -131,24 +131,27 @@ public class Tournament {
         }
     }
 
-	public void addAudit(String text) {
-		auditHistory.append(text);
-	}
+    public void addAudit(String text) {
+        auditHistory.append(text);
+    }
 
-	public List<String> getPlayers() { return players;}
-	public ArrayList<String> getGroup(int index) {
-		return groups.get(index);
-	}
+    public List<String> getPlayers() {
+        return players;
+    }
 
-	public int getNoOfGroups(){
-		return groups.size();
-	}
-	
-	public int getGroupSize(){
-		return groups.get(0).size();
-	}
+    public ArrayList<String> getGroup(int index) {
+        return groups.get(index);
+    }
 
-	public int noOfPlayers(){
-		return players.size();
-	}
+    public int getNoOfGroups() {
+        return groups.size();
+    }
+
+    public int getGroupSize() {
+        return groups.get(0).size();
+    }
+
+    public int noOfPlayers() {
+        return players.size();
+    }
 }
