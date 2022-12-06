@@ -15,6 +15,11 @@ public class PlayerSetup {
                 i--;
                 continue;
             }
+            if ((playerName == null) || (playerName.startsWith(" "))) {
+                System.out.println("Invalid name: A player name must contain (and start with) at least a character.");
+                i--;
+                continue;
+            }
             players.add(playerName);
         }
         return new ArrayList<>(players);
