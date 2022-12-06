@@ -1,123 +1,125 @@
 package logic;
+
 import java.util.*;
 
 public class Tournament {
 
-	private List<String> players;
+    private List<String> players;
 
-	private HashMap<Integer, ArrayList<String>> groups;
-	
-	private Audit auditHistory = new Audit();
-	
-	public Tournament generateTournament() {
-		auditHistory.append("Started at " + new Date().toString());
-		int noOfPlayers;
-		int playersPerGroup;
-		try (Scanner s = new Scanner(System.in)) {
+    private HashMap<Integer, ArrayList<String>> groups;
 
-			// Initializing the tournament size
-			noOfPlayers = setPlayerCount(s);
-			askForPlayerList(s);
+    private Audit auditHistory = new Audit();
 
-			// Creating a copy of the list - will be used to avoid duplicates
-			ArrayList<String> remainingPlayers = new ArrayList<>(players);
+    public Tournament generateTournament() {
+        auditHistory.append("Started at " + new Date().toString());
+        int noOfPlayers;
+        int playersPerGroup;
+        Scanner s = new Scanner(System.in);
 
-			groupStageSetup(noOfPlayers, s, remainingPlayers);
-			printGroups();
+        // Initializing the tournament size
+        noOfPlayers = setPlayerCount(s);
+        askForPlayerList(s);
 
-			System.out.println("After your first group has played a match, press any key to continue and set the scores...");
-			setScores();
-		}
-		return this;
-	}
+        // Creating a copy of the list - will be used to avoid duplicates
+        ArrayList<String> remainingPlayers = new ArrayList<>(players);
 
-	private int setPlayerCount(Scanner s) {
-		int noOfPlayers;
-		System.out.println("How many players?");
-		noOfPlayers = s.nextInt();
-		auditHistory.append("Created tournament of "+ noOfPlayers + " players.");
-		if (noOfPlayers <= 1) {
-			// WIP - Proper error handling
-			System.out.println("You cannot create a tournament with just yourself!");
-			System.exit(0);
-		}
+        groupStageSetup(noOfPlayers, s, remainingPlayers);
+        printGroups();
 
-		players = Collections.unmodifiableList(Players.createPlayers(s, noOfPlayers));
-		return noOfPlayers;
-	}
+        System.out.println("After your first group has played a match, press any key to continue and set the scores...");
+        setScores();
+        return this;
+    }
 
-	private void printGroups() {
-		System.out.println("Here are the groups:");
-		System.out.println("");
+    private int setPlayerCount(Scanner s) {
+        int noOfPlayers;
+        System.out.println("How many players?");
+        noOfPlayers = s.nextInt();
+        auditHistory.append("Created tournament of " + noOfPlayers + " players.");
+        if (noOfPlayers <= 1) {
+            // WIP - Proper error handling
+            System.out.println("You cannot create a tournament with just yourself!");
+            System.exit(0);
+        }
 
-		for (int i = 0; i < groups.size(); i++) {
-			System.out.println("Group " + (i + 1) + ":");
-			System.out.println(groups.get(i));
-		}
-	}
+        players = Collections.unmodifiableList(PlayerSetup.createPlayers(s, noOfPlayers));
+        return noOfPlayers;
+    }
 
-	private void groupStageSetup(int noOfPlayers, Scanner s, ArrayList<String> remainingPlayers) {
-		int playersPerGroup;
-		System.out.println("How many players would you like per group?");
-		System.out.println("Note that if you have an odd number of players, some groups may not respect this setting.");
-		playersPerGroup = s.nextInt();
-		groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
-	}
+    private void printGroups() {
+        System.out.println("Here are the groups:");
+        System.out.println("");
 
-	private void setScores() {
-		Scanner sc = new Scanner(System.in);
-		sc.next();
+        for (int i = 0; i < groups.size(); i++) {
+            System.out.println("Group " + (i + 1) + ":");
+            System.out.println(groups.get(i));
+        }
+    }
 
-		HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
+    private void groupStageSetup(int noOfPlayers, Scanner s, ArrayList<String> remainingPlayers) {
+        int playersPerGroup;
+        System.out.println("How many players would you like per group?");
+        System.out.println("Note that if you have an odd number of players, some groups may not respect this setting.");
+        playersPerGroup = s.nextInt();
+        groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
+    }
 
-		for (int i = 0; i < groups.size(); i++)
-		{
-			ArrayList<String> unpackedGroup = Groups.unpackGroup(i, groups, players);
-			HashMap<String, Integer> groupWithScore = Groups.setGroupScores(unpackedGroup, sc);
-			groupsWithScores.put(i, groupWithScore);
-		}
-	}
+    private void setScores() {
+        Scanner sc = new Scanner(System.in);
+        sc.next();
 
-	private void askForPlayerList(Scanner s) {
-		System.out.println("Before we continue...");
-		System.out.println("Do you want to see a list of the players? Y or N");
-		String showPlayerAnswer = s.next().toLowerCase();
-		boolean validAnswer = false;
-		while(!validAnswer) {
-			switch (showPlayerAnswer) {
-				case "y":
-					Players.showPlayers(players);
-					validAnswer = true;
-					break;
-				case "n":
-					validAnswer = true;
-					break;
-				default:
-					System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
-					showPlayerAnswer = s.next().toLowerCase();
-					break;
-			}
-		}
-	}
+        HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
 
-	public void addAudit(String text) {
-		auditHistory.append(text);
-	}
+        for (int i = 0; i < groups.size(); i++) {
+            ArrayList<String> unpackedGroup = Groups.unpackGroup(i, groups, players);
+            HashMap<String, Integer> groupWithScore = Groups.setGroupScores(unpackedGroup, sc);
+            groupsWithScores.put(i, groupWithScore);
+        }
+    }
 
-	public List<String> getPlayers() { return players;}
-	public ArrayList<String> getGroup(int index) {
-		return groups.get(index);
-	}
+    private void askForPlayerList(Scanner s) {
+        System.out.println("Before we continue...");
+        System.out.println("Do you want to see a list of the players? Y or N");
+        String showPlayerAnswer = s.next().toLowerCase();
+        boolean validAnswer = false;
+        while (!validAnswer) {
+            switch (showPlayerAnswer) {
+                case "y":
+                    PlayerSetup.showPlayers(players);
+                    validAnswer = true;
+                    break;
+                case "n":
+                    validAnswer = true;
+                    break;
+                default:
+                    System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
+                    showPlayerAnswer = s.next().toLowerCase();
+                    break;
+            }
+        }
+    }
 
-	public int getNoOfGroups(){
-		return groups.size();
-	}
-	
-	public int getGroupSize(){
-		return groups.get(0).size();
-	}
+    public void addAudit(String text) {
+        auditHistory.append(text);
+    }
 
-	public int noOfPlayers(){
-		return players.size();
-	}
+    public List<String> getPlayers() {
+        return players;
+    }
+
+    public ArrayList<String> getGroup(int index) {
+        return groups.get(index);
+    }
+
+    public int getNoOfGroups() {
+        return groups.size();
+    }
+
+    public int getGroupSize() {
+        return groups.get(0).size();
+    }
+
+    public int noOfPlayers() {
+        return players.size();
+    }
 }
