@@ -1,6 +1,5 @@
 package logic;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,18 +59,44 @@ public class Groups {
         return unpackedGroup;
     }
 
-    public static HashMap<String, Integer> setGroupScores(ArrayList<String> unpackedGroup, Scanner sc) {
+    public static HashMap<String, Integer> setGroupScores(ArrayList<String> unpackedGroup, Scanner sc, int noOfPlayersProgressing) {
         HashMap<String, Integer> groupWithScores = new HashMap<>();
-        for (String player :
-                unpackedGroup) {
+        for (String player : unpackedGroup) {
             System.out.println("Set a score for " + player + ":");
-            Integer score = sc.nextInt();
+            Integer score = 0;
+            try {
+                score = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. You must enter a valid number as score.");
+                sc.next(); // discard the invalid input
+                score = sc.nextInt();
+            }
             groupWithScores.put(player, score);
         }
         System.out.println("Here are the standings for this group: ");
         groupWithScores.entrySet().stream()
                 .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
                 .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
+
+        System.out.println("This means that the following players will proceed to the next round: ");
+        List<String> playersProgressing = new ArrayList<>();
+        groupWithScores.entrySet().stream()
+                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
+                .limit(noOfPlayersProgressing)
+                .forEach(k -> playersProgressing.add(k.getKey()));
+        System.out.println(playersProgressing);
+
+        System.out.println("Does this look right to you? (Y or N)");
+        String showPlayerAnswer;
+        do {
+            showPlayerAnswer = sc.next();
+            if (!showPlayerAnswer.equalsIgnoreCase("y") && !showPlayerAnswer.equalsIgnoreCase("n")) {
+                System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
+            }
+        } while (!showPlayerAnswer.equalsIgnoreCase("y") && !showPlayerAnswer.equalsIgnoreCase("n"));
+        if (showPlayerAnswer.equalsIgnoreCase("n")) {
+            setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
+        }
         return groupWithScores;
     }
 }
