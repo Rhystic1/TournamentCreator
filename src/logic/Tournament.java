@@ -80,22 +80,15 @@ public class Tournament {
     private void askForPlayerList(Scanner s) {
         System.out.println("Before we continue...");
         System.out.println("Do you want to see a list of the players? Y or N");
-        String showPlayerAnswer = s.next().toLowerCase();
-        boolean validAnswer = false;
-        while (!validAnswer) {
-            switch (showPlayerAnswer) {
-                case "y":
-                    PlayerSetup.showPlayers(players);
-                    validAnswer = true;
-                    break;
-                case "n":
-                    validAnswer = true;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
-                    showPlayerAnswer = s.next().toLowerCase();
-                    break;
+        String showPlayerAnswer;
+        do {
+            showPlayerAnswer = s.next();
+            if (!showPlayerAnswer.equalsIgnoreCase("y") && !showPlayerAnswer.equalsIgnoreCase("n")) {
+                System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
             }
+        } while (!showPlayerAnswer.equalsIgnoreCase("y") && !showPlayerAnswer.equalsIgnoreCase("n"));
+        if (showPlayerAnswer.equalsIgnoreCase("y")) {
+            PlayerSetup.showPlayers(players);
         }
     }
 
