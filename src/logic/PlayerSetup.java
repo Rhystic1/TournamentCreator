@@ -2,7 +2,7 @@ package logic;
 
 import java.util.*;
 
-public class PlayerSetup {
+public class PlayerSetup extends Tournament {
     static List<String> createPlayers(Scanner s, int noOfPlayers) {
         Set<String> players = new HashSet<>();
         s.nextLine();
