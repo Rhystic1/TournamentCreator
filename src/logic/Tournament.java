@@ -6,7 +6,7 @@ public class Tournament {
 
     private List<String> players;
 
-    HashMap<Integer, ArrayList<String>> groups;
+    static HashMap<Integer, ArrayList<String>> groups;
 
     private Audit auditHistory = new Audit();
 
@@ -40,8 +40,7 @@ public class Tournament {
         s.nextLine();
         // Begin next phase
         tournamentPhase.nextPhase();
-
-        Groups.shufflePlayers();
+        
 
         return this;
     }
@@ -65,7 +64,7 @@ public class Tournament {
         return noOfPlayers;
     }
 
-    void printGroups(HashMap<Integer, ArrayList<String>> groups) {
+    static void printGroups(HashMap<Integer, ArrayList<String>> groups) {
         // TODO: Modify this so that after the Group Stage this will display "Matches" instead of "groups"
         System.out.println("Here are the groups:");
         System.out.println("");
@@ -141,7 +140,7 @@ public class Tournament {
 
         for (int i = 0; i < groups.size(); i++) {
             ArrayList<String> unpackedGroup = Groups.unpackGroup(i, groups, players);
-            HashMap<String, Integer> groupWithScore = Groups.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
+            HashMap<String, Integer> groupWithScore = ProgressingPlayersAndGroups.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
             groupsWithScores.put(i, groupWithScore);
         }
     }

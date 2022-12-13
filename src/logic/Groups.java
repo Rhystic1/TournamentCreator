@@ -59,48 +59,7 @@ public class Groups extends Tournament {
         return unpackedGroup;
     }
 
-    public static HashMap<String, Integer> setGroupScores(ArrayList<String> unpackedGroup, Scanner sc, int noOfPlayersProgressing) {
-        HashMap<String, Integer> groupWithScores = new HashMap<>();
-        for (String player : unpackedGroup) {
-            System.out.println("Set a score for " + player + ":");
-            Integer score = 0;
-            try {
-                score = sc.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. You must enter a valid number as score.");
-                sc.next(); // discard the invalid input
-                score = sc.nextInt();
-            }
-            groupWithScores.put(player, score);
-        }
-        System.out.println("Here are the standings for this group: ");
-        groupWithScores.entrySet().stream()
-                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
-
-        System.out.println("This means that the following players will proceed to the next round: ");
-        selectProgressingPlayers(noOfPlayersProgressing, groupWithScores);
-
-        System.out.println("Does this look right to you? (Y or N)");
-        String showPlayerAnswer = Tournament.answerYesOrNo(sc);
-        if (showPlayerAnswer.equalsIgnoreCase("n")) {
-            setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
-        }
-        return groupWithScores;
-    }
-
-
-    static List<String> selectProgressingPlayers(int noOfPlayersProgressing, HashMap<String, Integer> groupWithScores) {
-        List<String> playersProgressing = new ArrayList<>();
-        groupWithScores.entrySet().stream()
-                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                .limit(noOfPlayersProgressing)
-                .forEach(k -> playersProgressing.add(k.getKey()));
-        System.out.println(playersProgressing);
-        return playersProgressing;
-    }
-
-    public HashMap<Integer, ArrayList<String>> shufflePlayers(Scanner s, HashMap<Integer, ArrayList<String>> groups, List<String> playersProgressing) {
+    public static HashMap<Integer, ArrayList<String>> shufflePlayers(Scanner s, HashMap<Integer, ArrayList<String>> groups, List<String> playersProgressing) {
         System.out.println("Do you want to avoid matching players from the same group again? (y/n)");
         String response = Tournament.answerYesOrNo(s);
         boolean avoidSameGroup = response.equalsIgnoreCase("y");
@@ -134,7 +93,7 @@ public class Groups extends Tournament {
         return nextStageDraws;
     }
 
-    private boolean isPlayerFromSameGroup(String player1, String player2) {
+    private static boolean isPlayerFromSameGroup(String player1, String player2) {
         // Check if the two players are from the same group
         // (this assumes that the groups map is already populated with the players)
         for (ArrayList<String> group : groups.values()) {
