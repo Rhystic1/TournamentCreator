@@ -40,7 +40,7 @@ public class Tournament {
         s.nextLine();
         // Begin next phase
         tournamentPhase.nextPhase();
-        
+
 
         return this;
     }
@@ -139,7 +139,7 @@ public class Tournament {
         HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
-            ArrayList<String> unpackedGroup = Groups.unpackGroup(i, groups, players);
+            ArrayList<Player> unpackedGroup = Groups.unpackGroup(i, groups, players);
             HashMap<String, Integer> groupWithScore = ProgressingPlayersAndGroups.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
             groupsWithScores.put(i, groupWithScore);
         }

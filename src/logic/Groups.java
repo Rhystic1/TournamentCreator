@@ -27,7 +27,7 @@ public class Groups extends Tournament {
         Random rand = new Random();
         ArrayList<String> group = new ArrayList<>();
         for (int i = 0; i < playersPerGroup; i++) {
-            if ((group.size() != playersPerGroup) && (!remainingPlayers.isEmpty())) {
+            if ((group.size() != playersPerGroup) && (!remainingPlayers.isEmpty())) { // Avoid going out of bounds
                 int randomIndex = rand.nextInt(remainingPlayers.size());
                 group.add(remainingPlayers.get(randomIndex));
                 remainingPlayers.remove(randomIndex);
@@ -42,15 +42,14 @@ public class Groups extends Tournament {
         return group;
     }
 
-    public static ArrayList<String> unpackGroup(Integer groupNumber, HashMap<Integer, ArrayList<String>> groups, List<String> players) {
+    public static ArrayList<Player> unpackGroup(Integer groupNumber, HashMap<Integer, ArrayList<String>> groups, List<Player> players) {
         ArrayList<String> originalGroup = new ArrayList<>();
-        ArrayList<String> unpackedGroup = new ArrayList<>();
+        ArrayList<Player> unpackedGroup = new ArrayList<>();
         Pattern pattern;
         Matcher matcher;
         originalGroup.add(groups.get(groupNumber).toString());
-        for (String player :
-                players) {
-            pattern = Pattern.compile(player);
+        for (Player player : players) {
+            pattern = Pattern.compile(player.getName());
             matcher = pattern.matcher(originalGroup.get(0));
             if (matcher.find()) {
                 unpackedGroup.add(player);

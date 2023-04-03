@@ -11,7 +11,10 @@ public interface IPlayer {
 
     int getStartingGroup();
 
-    public void setStartingGroup(int startingGroup);
+    void setStartingGroup(int startingGroup);
+
+    void setLastPlayerPhase(Phase lastPlayerPhase);
+    Phase getLastPlayerPhase();
 
     boolean isEliminated();
 

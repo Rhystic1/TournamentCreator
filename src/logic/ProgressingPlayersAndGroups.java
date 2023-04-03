@@ -11,34 +11,56 @@ public class ProgressingPlayersAndGroups {
         this.playersProgressing = playersProgressing;
     }
 
-    public static ProgressingPlayersAndGroups setGroupScores(ArrayList<String> unpackedGroup, Scanner sc, int noOfPlayersProgressing) {
+    public static ProgressingPlayersAndGroups setGroupScores(ArrayList<Player> unpackedGroup, Scanner sc, int noOfPlayersProgressing) {
         HashMap<String, Integer> groupWithScores = new HashMap<>();
-        for (String player : unpackedGroup) {
-            System.out.println("Set a score for " + player + ":");
-            int score = 0;
-            try {
-                score = sc.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. You must enter a valid number as score.");
-                sc.next(); // discard the invalid input
-                score = sc.nextInt();
-            }
-            groupWithScores.put(player, score);
+        for (Player player : unpackedGroup) {
+            System.out.println("Set a score for " + player.getName() + ":");
+            int score = getScoreFromUser(sc);
+            player.setPlayerScore(score);
+            groupWithScores.put(player.getName(), score);
         }
-        System.out.println("Here are the standings for this group: ");
-        groupWithScores.entrySet().stream()
-                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
+        printStandings(groupWithScores);
 
         System.out.println("This means that the following players will proceed to the next round: ");
         ProgressingPlayersAndGroups playersProgressing = selectProgressingPlayers(noOfPlayersProgressing, groupWithScores);
 
-        System.out.println("Does this look right to you? (Y or N)");
-        String showPlayerAnswer = Tournament.answerYesOrNo(sc);
-        if (showPlayerAnswer.equalsIgnoreCase("n")) {
-            setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
+        boolean repeatProcess;
+        do {
+            System.out.println("Does this look right to you? (Y or N)");
+            String showPlayerAnswer = Tournament.answerYesOrNo(sc);
+            repeatProcess = showPlayerAnswer.equalsIgnoreCase("n");
+            if (repeatProcess) {
+                setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
+            }
+        } while (repeatProcess);
+
+        // Update players' elimination status
+        for (Player player : unpackedGroup) {
+            if (!playersProgressing.getPlayersProgressing().contains(player.getName())) {
+                player.setEliminated(true);
+            }
         }
+
         return new ProgressingPlayersAndGroups(groupWithScores, playersProgressing.getPlayersProgressing());
+    }
+
+    private static int getScoreFromUser(Scanner sc) {
+        int score = 0;
+        try {
+            score = sc.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. You must enter a valid number as score.");
+            sc.next(); // discard the invalid input
+            score = sc.nextInt();
+        }
+        return score;
+    }
+
+    private static void printStandings(HashMap<String, Integer> groupWithScores) {
+        System.out.println("Here are the standings for this group: ");
+        groupWithScores.entrySet().stream()
+                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
+                .forEach(k -> System.out.println(k.getKey() + ": " + k.getValue()));
     }
 
     static ProgressingPlayersAndGroups selectProgressingPlayers(int noOfPlayersProgressing, HashMap<String, Integer> groupWithScores) {

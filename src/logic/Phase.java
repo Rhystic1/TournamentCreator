@@ -16,6 +16,7 @@ public enum Phase {
     public int getValue() {
         return value;
     }
+
     public void nextPhase() {
         this.value++;
     }
