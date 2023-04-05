@@ -3,7 +3,7 @@ package logic;
 public class Player implements IPlayer {
     private String name;
     private int score;
-    private int startingGroup = Integer.parseInt(null); // Workaround as primitives cannot be nullable
+    private int startingGroup = 0; // Workaround as primitives cannot be nullable
     private Phase lastPlayerPhase;
     private boolean isEliminated = false;
 
@@ -18,8 +18,20 @@ public class Player implements IPlayer {
         this.lastPlayerPhase = lastPlayerPhase;
     }
 
+    public Player(String name) {
+        this.name = name;
+        // get tournamentPhase from the current Tournament object
+        this.lastPlayerPhase = Tournament.getTournamentPhase();
+
+    }
+
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     public void setName(String name) {
@@ -42,9 +54,13 @@ public class Player implements IPlayer {
         this.startingGroup = startingGroup;
     }
 
-    public void setLastPlayerPhase(Phase lastPlayerPhase) { this.lastPlayerPhase = lastPlayerPhase; }
+    public void setLastPlayerPhase(Phase lastPlayerPhase) {
+        this.lastPlayerPhase = lastPlayerPhase;
+    }
 
-    public Phase getLastPlayerPhase() { return this.lastPlayerPhase = lastPlayerPhase; }
+    public Phase getLastPlayerPhase() {
+        return this.lastPlayerPhase = lastPlayerPhase;
+    }
 
 
     public boolean isEliminated() {

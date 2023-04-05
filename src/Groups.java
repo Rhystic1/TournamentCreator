@@ -8,7 +8,7 @@ public class Groups {
         if (noOfPlayers % playersPerGroup == 0) {
             noOfGroups = noOfPlayers / playersPerGroup;
         } else {
-            noOfGroupsOdd = Math.ceil((double)noOfPlayers / ((double)playersPerGroup + 1));
+            noOfGroupsOdd = Math.ceil((double) noOfPlayers / ((double) playersPerGroup + 1));
             noOfGroups = (int) noOfGroupsOdd;
         }
         groups = new HashMap<>(noOfGroups);
@@ -20,10 +20,9 @@ public class Groups {
 
     private static List<String> createGroup(List<String> remainingPlayers) {
         Random rand = new Random();
-        int noOfPlayers = 4;
         List<String> group = new ArrayList<>();
-        for (int i = 0; i < noOfPlayers; i++) {
-            if ((group.size() != noOfPlayers) && (remainingPlayers.size() != 0)) {
+        for (int i = 0; i < remainingPlayers.size(); i++) {
+            if ((group.size() != remainingPlayers.size()) && (remainingPlayers.size() != 0)) {
                 int randomIndex = rand.nextInt(remainingPlayers.size());
                 group.add(remainingPlayers.get(randomIndex));
                 remainingPlayers.remove(randomIndex);

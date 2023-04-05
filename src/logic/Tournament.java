@@ -4,15 +4,22 @@ import java.util.*;
 
 public class Tournament {
 
-    private List<String> players;
+    // make players of type Player
+    private List<Player> players;
 
     static HashMap<Integer, ArrayList<String>> groups;
 
-    private Audit auditHistory = new Audit();
+    private final Audit auditHistory = new Audit();
+
+    private static Phase tournamentPhase;
+
+    public static Phase getTournamentPhase() {
+        return tournamentPhase;
+    }
 
     public Tournament generateTournament() {
         auditHistory.append("Started at " + new Date().toString());
-        Phase tournamentPhase = Phase.PRELIMINARY_ROUND;
+        tournamentPhase = Phase.PRELIMINARY_ROUND;
         int noOfPlayers = 0;
         int playersPerGroup;
         Scanner s = new Scanner(System.in);
@@ -24,10 +31,33 @@ public class Tournament {
         askForPlayerList(s);
 
         // Creating a copy of the list - will be used to avoid duplicates
-        ArrayList<String> remainingPlayers = new ArrayList<>(players);
+        ArrayList<Player> remainingPlayers = new ArrayList<Player>(players);
 
         tournamentPhase = Phase.GROUP; // TODO: For now, we are going to assume the user will start straight from the group stage - prelim rounds will be implemented later
+        boolean hasAdditionalGroupStages = setAdditionalGroupStages(s);
+        playGroupStage(noOfPlayers, s, remainingPlayers);
+        if (hasAdditionalGroupStages) {
+            playGroupStage(noOfPlayers, s, remainingPlayers);
+        }
 
+        // Begin next phase
+        tournamentPhase.nextPhase();
+        Knockout knockout = new Knockout();
+        ProgressingPlayersAndGroups ppg = new ProgressingPlayersAndGroups();
+        ArrayList<Player> playersProgressing = ppg.getPlayersProgressing();
+        knockout.playKnockoutPhase(s, groups, playersProgressing, remainingPlayers);
+
+        return this;
+    }
+
+    private boolean setAdditionalGroupStages(Scanner s) {
+        System.out.println("Do you want to have an additional group stage after the first one? (y/n)");
+        String response = answerYesOrNo(s);
+        return response.equalsIgnoreCase("y");
+    }
+
+    private void playGroupStage(int noOfPlayers, Scanner s, ArrayList<Player> remainingPlayers) {
+        int playersPerGroup;
         playersPerGroup = groupStageSetup(noOfPlayers, s, remainingPlayers);
         int noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
         int playersPerMatch = setPlayersPerMatch(noOfPlayers, s);
@@ -38,11 +68,6 @@ public class Tournament {
 
         System.out.println("If you're ready for the next round, press any key to continue!");
         s.nextLine();
-        // Begin next phase
-        tournamentPhase.nextPhase();
-
-
-        return this;
     }
 
     private int setPlayerCount(Scanner s) {
@@ -66,7 +91,11 @@ public class Tournament {
 
     static void printGroups(HashMap<Integer, ArrayList<String>> groups) {
         // TODO: Modify this so that after the Group Stage this will display "Matches" instead of "groups"
-        System.out.println("Here are the groups:");
+        if (tournamentPhase == Phase.GROUP) {
+            System.out.println("Here are the groups:");
+        } else {
+            System.out.println("Here are the matches:");
+        }
         System.out.println("");
 
         for (int i = 0; i < groups.size(); i++) {
@@ -75,7 +104,7 @@ public class Tournament {
         }
     }
 
-    private int groupStageSetup(int noOfPlayers, Scanner s, ArrayList<String> remainingPlayers) {
+    private int groupStageSetup(int noOfPlayers, Scanner s, ArrayList<Player> remainingPlayers) {
         int playersPerGroup = 0;
         System.out.println("How many players would you like per group?");
         System.out.println("Note that if you have an odd number of players, some groups may not respect this setting.");
@@ -139,8 +168,10 @@ public class Tournament {
         HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
+            // fix this
             ArrayList<Player> unpackedGroup = Groups.unpackGroup(i, groups, players);
-            HashMap<String, Integer> groupWithScore = ProgressingPlayersAndGroups.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
+            ProgressingPlayersAndGroups p = new ProgressingPlayersAndGroups();
+            HashMap<String, Integer> groupWithScore = p.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
             groupsWithScores.put(i, groupWithScore);
         }
     }
@@ -169,7 +200,7 @@ public class Tournament {
         auditHistory.append(text);
     }
 
-    public List<String> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
