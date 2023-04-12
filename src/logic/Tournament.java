@@ -35,7 +35,7 @@ public class Tournament {
 
         tournamentPhase = Phase.GROUP; // TODO: For now, we are going to assume the user will start straight from the group stage - prelim rounds will be implemented later
         boolean hasAdditionalGroupStages = setAdditionalGroupStages(s);
-        playGroupStage(noOfPlayers, s, remainingPlayers);
+        ArrayList<Player> playersProgressing = playGroupStage(noOfPlayers, s, remainingPlayers);
         if (hasAdditionalGroupStages) {
             playGroupStage(noOfPlayers, s, remainingPlayers);
         }
@@ -43,9 +43,8 @@ public class Tournament {
         // Begin next phase
         tournamentPhase.nextPhase();
         Knockout knockout = new Knockout();
-        ProgressingPlayersAndGroups ppg = new ProgressingPlayersAndGroups();
-        ArrayList<Player> playersProgressing = ppg.getPlayersProgressing();
-        knockout.playKnockoutPhase(s, groups, playersProgressing, remainingPlayers);
+        
+        knockout.playKnockoutPhase(s, groups, playersProgressing);
 
         return this;
     }
@@ -56,7 +55,7 @@ public class Tournament {
         return response.equalsIgnoreCase("y");
     }
 
-    private void playGroupStage(int noOfPlayers, Scanner s, ArrayList<Player> remainingPlayers) {
+    private ArrayList<Player> playGroupStage(int noOfPlayers, Scanner s, ArrayList<Player> remainingPlayers) {
         int playersPerGroup;
         playersPerGroup = groupStageSetup(noOfPlayers, s, remainingPlayers);
         int noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
@@ -64,10 +63,12 @@ public class Tournament {
         printGroups(groups);
 
         System.out.println("After your first group has played a match, press any key to continue and set the scores...");
-        setScores(noOfPlayersProgressing);
+        ArrayList<Player> playersProgressing = setScores(noOfPlayersProgressing);
 
         System.out.println("If you're ready for the next round, press any key to continue!");
         s.nextLine();
+
+        return playersProgressing;
     }
 
     private int setPlayerCount(Scanner s) {
@@ -161,19 +162,35 @@ public class Tournament {
     }
 
 
-    private void setScores(int noOfPlayersProgressing) {
+    // change the method below so that it returns an ArrayList<Player> of the players progressing
+
+    private ArrayList<Player> setScores(int noOfPlayersProgressing) {
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
 
         HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
-            // fix this
             ArrayList<Player> unpackedGroup = Groups.unpackGroup(i, groups, players);
             ProgressingPlayersAndGroups p = new ProgressingPlayersAndGroups();
             HashMap<String, Integer> groupWithScore = p.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
             groupsWithScores.put(i, groupWithScore);
         }
+        // Take the names of the players progressing from groupsWithScores and return them as an ArrayList<Player>
+
+        ArrayList<Player> playersProgressing = new ArrayList<>();
+        for (int i = 0; i < groupsWithScores.size(); i++) {
+            HashMap<String, Integer> group = groupsWithScores.get(i);
+            for (int j = 0; j < noOfPlayersProgressing; j++) {
+                String playerName = (String) group.keySet().toArray()[j];
+                for (Player player : players) {
+                    if (player.getName().equals(playerName)) {
+                        playersProgressing.add(player);
+                    }
+                }
+            }
+        }
+        return playersProgressing;
     }
 
     private void askForPlayerList(Scanner s) {

@@ -38,7 +38,7 @@ public class Knockout extends Tournament {
         return nextStageDraws;
     }
 
-    void playKnockoutPhase(Scanner s, HashMap<Integer, ArrayList<String>> groups, ArrayList<Player> playersProgressing, ArrayList<Player> groupResults) {
+    void playKnockoutPhase(Scanner s, HashMap<Integer, ArrayList<String>> groups, ArrayList<Player> playersProgressing) {
         System.out.println("Do you want to avoid matching players from the same group again? (y/n)");
         String response = Tournament.answerYesOrNo(s);
         boolean avoidSameGroup = response.equalsIgnoreCase("y");
