@@ -1,88 +1,212 @@
 package logic;
+
 import java.util.*;
 
 public class Tournament {
 
-	private List<String> players;
+    public int noOfPlayers;
+    public int playersPerMatch;
+    private List<Player> players;
 
-	private HashMap<Integer, ArrayList<String>> groups;
-	
-	private Audit auditHistory = new Audit();
-	
-	public Tournament generateTournament() {
-		auditHistory.append("Started at " + new Date().toString());
-		try (Scanner s = new Scanner(System.in)) {
+    static HashMap<Integer, ArrayList<Player>> groups;
 
-			// Initializing the tournament size
-			System.out.println("How many players?");
-			int noOfPlayers = s.nextInt();
-			auditHistory.append("Created tournament of "+noOfPlayers+" players.");
-			if (noOfPlayers <= 1) {
-				// WIP - Proper error handling
-				System.out.println("You cannot create a tournament with just yourself! That is not a tournament!");
-				System.exit(0);
-			}
+    public int playersPerGroup;
 
-			players = Collections.unmodifiableList(Players.createPlayers(s, noOfPlayers));
+    private final Audit auditHistory = new Audit();
 
-			System.out.println("Before we continue...");
-			System.out.println("Do you want to see a list of the players? Y or N");
-			String showPlayerAnswer = s.next().toLowerCase();
-			boolean validAnswer = false;
-			while(!validAnswer) {
-				switch (showPlayerAnswer) {
-					case "y":
-						Players.showPlayers(players);
-						validAnswer = true;
-						break;
-					case "n":
-						validAnswer = true;
-						break;
-					default:
-						System.out.println("Invalid selection. Please answer either (y)es or (n)o.");
-						showPlayerAnswer = s.next().toLowerCase();
-						break;
-				}
-			}
+    private static Phase tournamentPhase;
 
-			// Creating a copy of the list - will be used to avoid duplicates
-			ArrayList<String> remainingPlayers = new ArrayList<>(players);
+    public static Phase getTournamentPhase() {
+        return tournamentPhase;
+    }
 
-			// Creating the group stage
-			System.out.println("How many players would you like per group?");
-			System.out.println("Note that if you have an odd number of players, some groups may not respect this setting.");
-			int playersPerGroup = s.nextInt();
-			groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
+    public int getNoOfPlayers() {
+        return noOfPlayers;
+    }
 
-			// Printing the groups
-			System.out.println("Here are the groups:");
-			System.out.println("");
+    public Tournament generateTournament() {
+        auditHistory.append("Started at " + new Date().toString());
+        tournamentPhase = Phase.PRELIMINARY_ROUND;
+        this.noOfPlayers = 0;
+        this.playersPerGroup = 0;
+        Scanner s = new Scanner(System.in);
 
-			for (int i = 0; i < groups.size(); i++) {
-				System.out.println("Group " + (i + 1) + ":");
-				System.out.println(groups.get(i));
-			}
-		}
-		return this;
-	}
-	
-	public void addAudit(String text) {
-		auditHistory.append(text);
-	}
-	
-	public ArrayList<String> getGroup(int index) {
-		return groups.get(index);
-	}
+        // Initializing the tournament size
+        while (noOfPlayers < 2) {
+            this.noOfPlayers = setNoOfPlayers(s);
+        }
+        askForPlayerList(s);
 
-	public int getNoOfGroups(){
-		return groups.size();
-	}
-	
-	public int getGroupSize(){
-		return groups.get(0).size();
-	}
+        // Creating a copy of the list - will be used to avoid duplicates
+        ArrayList<Player> remainingPlayers = new ArrayList<>(players);
 
-	public int noOfPlayers(){
-		return players.size();
-	}
+        tournamentPhase = Phase.GROUP; // TODO: For now, we are going to assume the user will start straight from the group stage - prelim rounds will be implemented later
+        boolean hasAdditionalGroupStages = setAdditionalGroupStages(s);
+        ArrayList<Player> playersProgressing = playGroupStage(noOfPlayers, s, remainingPlayers);
+        if (hasAdditionalGroupStages) {
+            playGroupStage(noOfPlayers, s, remainingPlayers);
+        }
+
+        // Begin next phase
+        tournamentPhase.nextPhase();
+        Knockout knockout = new Knockout();
+
+        knockout.playKnockoutPhase(s, groups, playersProgressing);
+
+        return this;
+    }
+
+    private boolean setAdditionalGroupStages(Scanner s) {
+        System.out.println("Do you want to have an additional group stage after the first one? (y/n)");
+        String response = ConsoleLogic.answerYesOrNo(s);
+        return response.equalsIgnoreCase("y");
+    }
+
+    private ArrayList<Player> playGroupStage(int noOfPlayers, Scanner s, ArrayList<Player> remainingPlayers) {
+        int playersPerGroup;
+        playersPerGroup = GroupStage.groupStageSetup(noOfPlayers, s, remainingPlayers);
+        int noOfPlayersProgressing = noOfPlayersProgressing(s, playersPerGroup);
+        this.playersPerMatch = setPlayersPerMatch(noOfPlayers, s);
+        printGroups(groups);
+
+        System.out.println("After your first group has played a match, press any key to continue and set the scores...");
+        ArrayList<Player> playersProgressing = setScores(noOfPlayersProgressing);
+
+        System.out.println("If you're ready for the next round, press any key to continue!");
+        s.nextLine();
+
+        return playersProgressing;
+    }
+
+    private int setNoOfPlayers(Scanner s) {
+        int noOfPlayers = 0;
+        while (noOfPlayers < 2) {
+            System.out.println("How many players?");
+            try {
+                noOfPlayers = s.nextInt();
+                if (noOfPlayers < 2) {
+                    System.out.println("Invalid number. You must enter at least 2 players.");
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Invalid number. You must enter a valid number to proceed.");
+                s.nextLine(); // consume the invalid input
+            }
+        }
+        auditHistory.append("Created tournament of " + noOfPlayers + " players.");
+        players = Collections.unmodifiableList(PlayerSetup.createPlayers(s, noOfPlayers));
+        return noOfPlayers;
+    }
+
+    static void printGroups(HashMap<Integer, ArrayList<Player>> groups) {
+        // TODO: Modify this so that after the Group Stage this will display "Matches" instead of "groups"
+        if (tournamentPhase == Phase.GROUP) {
+            System.out.println("Here are the groups:");
+        } else {
+            System.out.println("Here are the matches:");
+        }
+        System.out.println("");
+
+        for (int i = 0; i < groups.size(); i++) {
+            System.out.println("Group " + (i + 1) + ":");
+            System.out.println(groups.get(i));
+        }
+    }
+
+    private int setPlayersPerMatch(int noOfPlayers, Scanner s) {
+        int playersPerMatch = 0;
+        System.out.println("One last thing: in the next round, how many players per match should be matched together?");
+        while ((playersPerMatch >= noOfPlayers) || (playersPerMatch == 0)) {
+            try {
+                playersPerMatch = s.nextInt();
+                if (playersPerMatch >= noOfPlayers) {
+                    System.out.println("Invalid number. The number of players per match cannot be higher than the number of total players.");
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Invalid number. You must input a valid integer number.");
+                s.nextLine(); // consume the invalid input
+            }
+        }
+        return playersPerMatch;
+    }
+
+    public int noOfPlayersProgressing(Scanner s, int playersPerGroup) {
+        int noOfPlayersProgressing;
+        System.out.println("And how many players should proceed to the next round?");
+        while (true) {
+            try {
+                noOfPlayersProgressing = s.nextInt();
+                if (noOfPlayersProgressing < playersPerGroup) {
+                    break;
+                } else {
+                    System.out.println("Invalid selection. The number must be less than the number of players per group.");
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Invalid number. You must input a valid integer number.");
+                s.nextLine();
+            }
+        }
+        return noOfPlayersProgressing;
+    }
+
+    private ArrayList<Player> setScores(int noOfPlayersProgressing) {
+        Scanner sc = new Scanner(System.in);
+        sc.nextLine();
+
+        HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
+
+        for (int i = 0; i < groups.size(); i++) {
+            ArrayList<Player> unpackedGroup = Groups.unpackGroup(i, groups, players);
+            ProgressingPlayersAndGroups p = new ProgressingPlayersAndGroups();
+            HashMap<String, Integer> groupWithScore = p.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
+            groupsWithScores.put(i, groupWithScore);
+        }
+        // Take the names of the players progressing from groupsWithScores and return them as an ArrayList<Player>
+
+        ArrayList<Player> playersProgressing = new ArrayList<>();
+        for (int i = 0; i < groupsWithScores.size(); i++) {
+            HashMap<String, Integer> group = groupsWithScores.get(i);
+            for (int j = 0; j < noOfPlayersProgressing; j++) {
+                String playerName = (String) group.keySet().toArray()[j];
+                for (Player player : players) {
+                    if (player.getName().equals(playerName)) {
+                        playersProgressing.add(player);
+                    }
+                }
+            }
+        }
+        return playersProgressing;
+    }
+
+    private void askForPlayerList(Scanner s) {
+        System.out.println("Before we continue...");
+        System.out.println("Do you want to see a list of the players? Y or N");
+        String showPlayerAnswer = ConsoleLogic.answerYesOrNo(s);
+        if (showPlayerAnswer.equalsIgnoreCase("y")) {
+            PlayerSetup.showPlayers(players);
+        }
+    }
+
+    public void addAudit(String text) {
+        auditHistory.append(text);
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public ArrayList<Player> getGroup(int index) {
+        return groups.get(index);
+    }
+
+    public int getNoOfGroups() {
+        return groups.size();
+    }
+
+    public int getGroupSize() {
+        return groups.get(0).size();
+    }
+
+    public int noOfPlayers() {
+        return players.size();
+    }
 }
