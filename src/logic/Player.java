@@ -20,9 +20,7 @@ public class Player implements IPlayer {
 
     public Player(String name) {
         this.name = name;
-        // get tournamentPhase from the current Tournament object
         this.lastPlayerPhase = Tournament.getTournamentPhase();
-
     }
 
     public String getName() {
@@ -59,7 +57,7 @@ public class Player implements IPlayer {
     }
 
     public Phase getLastPlayerPhase() {
-        return this.lastPlayerPhase = lastPlayerPhase;
+        return this.lastPlayerPhase;
     }
 
 

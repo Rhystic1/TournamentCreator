@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import logic.Player;
 import logic.Tournament;
 
 import javax.swing.JButton;
@@ -107,12 +108,12 @@ public class TournamentPanel extends JPanel {
 
     private void renderTournament(Graphics g) {
         boolean isOdd = tournament.noOfPlayers() % 2 != 0;
-        ArrayList<String> names = tournament.getGroup(currentGroup);
+        ArrayList<Player> names = tournament.getGroup(currentGroup);
         int lastGroup = tournament.getNoOfGroups();
         g.drawString("Group " + (currentGroup + 1), 100, 100);
         for (int i = 0; i < names.size(); i++) {
             // draw the names of the players centered in the box
-            g.drawString(names.get(i), playerMarkers.get(i).getBounds().x + 10,
+            g.drawString(String.valueOf(names.get(i)), playerMarkers.get(i).getBounds().x + 10,
                     playerMarkers.get(i).getBounds().y + 30);
         }
         g.drawString(debugStr, 0, 20);

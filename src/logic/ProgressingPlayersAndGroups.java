@@ -20,7 +20,7 @@ public class ProgressingPlayersAndGroups {
         HashMap<String, Integer> groupWithScores = new HashMap<>();
         for (Player player : unpackedGroup) {
             System.out.println("Set a score for " + player.getName() + ":");
-            int score = getScoreFromUser(sc);
+            int score = setPlayerScore(sc);
             player.setPlayerScore(score);
             groupWithScores.put(player.getName(), score);
         }
@@ -32,7 +32,7 @@ public class ProgressingPlayersAndGroups {
         boolean repeatProcess;
         do {
             System.out.println("Does this look right to you? (Y or N)");
-            String showPlayerAnswer = Tournament.answerYesOrNo(sc);
+            String showPlayerAnswer = ConsoleLogic.answerYesOrNo(sc);
             repeatProcess = showPlayerAnswer.equalsIgnoreCase("n");
             if (repeatProcess) {
                 setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
@@ -49,7 +49,7 @@ public class ProgressingPlayersAndGroups {
         return new ProgressingPlayersAndGroups(groupWithScores, playersProgressing.getPlayersProgressing());
     }
 
-    private static int getScoreFromUser(Scanner sc) {
+    private static int setPlayerScore(Scanner sc) {
         int score = 0;
         try {
             score = sc.nextInt();
