@@ -60,10 +60,6 @@ public class Group extends Tournament {
         return false;
     }
 
-    // create a function that takes unpackedGroup, Scanner sc and int noOfPlayersProgressing
-    // called setGroupScores which iterates through all the players in the unpackedGroup
-    // prints the standings, asks for confirmation and returns the same group but with scores
-
     public static HashMap<String, Integer> setGroupScores(ArrayList<Player> unpackedGroup, Scanner sc, int noOfPlayersProgressing) {
         HashMap<String, Integer> groupWithScores = new HashMap<>();
         for (Player player : unpackedGroup) {
