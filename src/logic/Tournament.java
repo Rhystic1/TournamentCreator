@@ -155,12 +155,11 @@ public class Tournament {
         HashMap<Integer, HashMap> groupsWithScores = new HashMap<>();
 
         for (int i = 0; i < groups.size(); i++) {
-            ArrayList<Player> unpackedGroup = Groups.unpackGroup(i, groups, players);
-            ProgressingPlayersAndGroups p = new ProgressingPlayersAndGroups();
-            HashMap<String, Integer> groupWithScore = p.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing).getGroupWithScores();
+            ArrayList<Player> unpackedGroup = Group.unpackGroup(i, groups, players);
+            Group p = new Group();
+            HashMap<String, Integer> groupWithScore = Group.setGroupScores(unpackedGroup, sc, noOfPlayersProgressing);
             groupsWithScores.put(i, groupWithScore);
         }
-        // Take the names of the players progressing from groupsWithScores and return them as an ArrayList<Player>
 
         ArrayList<Player> playersProgressing = new ArrayList<>();
         for (int i = 0; i < groupsWithScores.size(); i++) {

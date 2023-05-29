@@ -17,7 +17,7 @@ public class GroupStage extends Tournament {
                 s.nextLine(); // consume the invalid input
             }
         }
-        groups = Groups.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
+        groups = Group.createGroups(noOfPlayers, remainingPlayers, playersPerGroup);
         return playersPerGroup;
     }
 }
