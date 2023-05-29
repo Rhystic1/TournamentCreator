@@ -50,11 +50,11 @@ public class Knockout extends Tournament {
 
 
     private static HashMap<Integer, ArrayList<Player>> createNextStageDraws(ArrayList<Player> playersProgressing) {
-        return Groups.createGroups(playersProgressing.size(), playersProgressing, 2);
+        return Group.createGroups(playersProgressing.size(), playersProgressing, 2);
     }
 
     private static boolean isSameGroup(Player previousPlayer, Player currentPlayer) {
-        return previousPlayer != null && Groups.isPlayerFromSameGroup(previousPlayer, currentPlayer);
+        return previousPlayer != null && Group.isPlayerFromSameGroup(previousPlayer, currentPlayer);
     }
 
     void playKnockoutPhase(Scanner s, HashMap<Integer, ArrayList<Player>> groups, ArrayList<Player> playersProgressing) {
