@@ -162,10 +162,19 @@ public class Tournament {
         }
 
         ArrayList<Player> playersProgressing = new ArrayList<>();
+
         for (int i = 0; i < groupsWithScores.size(); i++) {
+            // Convert into a list of map entries
             HashMap<String, Integer> group = groupsWithScores.get(i);
+
+            List<Map.Entry<String, Integer>> list = new ArrayList<>(group.entrySet());
+            // Sort list by score
+            list.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
+
+            // Get the highest scoring players
+
             for (int j = 0; j < noOfPlayersProgressing; j++) {
-                String playerName = (String) group.keySet().toArray()[j];
+                String playerName = list.get(j).getKey();
                 for (Player player : players) {
                     if (player.getName().equals(playerName)) {
                         playersProgressing.add(player);

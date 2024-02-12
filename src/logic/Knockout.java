@@ -35,13 +35,21 @@ public class Knockout extends Tournament {
                     if (groupIndex >= nextStageDraws.size()) {
                         groupIndex = 0;
                     }
+                } else {
+                    nextStageDraws.get(groupIndex).add(currentPlayer);
+                    drawGroups.get(groupIndex).add(currentPlayerGroup);
+                    groupIndex++;
+                    if (groupIndex >= nextStageDraws.size()) {
+                        groupIndex = 0;
+                    }
                 }
-            }
-            nextStageDraws.get(groupIndex).add(currentPlayer);
-            drawGroups.get(groupIndex).add(currentPlayerGroup);
-            groupIndex++;
-            if (groupIndex >= nextStageDraws.size()) {
-                groupIndex = 0;
+            } else {
+                nextStageDraws.get(groupIndex).add(currentPlayer);
+                drawGroups.get(groupIndex).add(currentPlayerGroup);
+                groupIndex++;
+                if (groupIndex >= nextStageDraws.size()) {
+                    groupIndex = 0;
+                }
             }
         }
         printGroups(nextStageDraws);
